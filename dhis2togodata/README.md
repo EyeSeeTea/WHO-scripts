@@ -14,6 +14,6 @@ Example: https://extranet.who.int/dhis2-dev/api/organisationUnits.json?filter=pa
 Replacing https://extranet.who.int/dhis2-dev/ by the server and xB6nQN5Wtpg by the country uid and save as json
 
 Requirements:
-Python 2.7 
-- To install python download the appropriate package from the following link: https://www.python.org/download/releases/2.7/
+Python 3
+- To install python download the appropriate package from the following link: https://www.python.org/downloads/release/python-382/
 

@@ -1,1 +1,1 @@
-python2.7 dhis2togodata.py
+python3 dhis2togodata.py
