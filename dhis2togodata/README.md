@@ -4,7 +4,9 @@ dhis2 to godata organisation unit converter
 How to use:
 1) Download dhis2 organisation unit files and add the files to the input folder. 
 You can add multiple files to convert in the same execution.
-2) Run the script (run-dhis2togodata.bat).
+2) Run the script
+  - Bat: execute run-dhis2togodata.bat
+  - Command line: go to the script folder and run "absoultepath/python3 dhis2togodata.py".
 3) The files will be generated in the output folder.
 
 How to download dhis2 formatted org units:
