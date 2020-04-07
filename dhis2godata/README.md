@@ -1,19 +1,20 @@
 # dhis2godata
 dhis2 to godata organisation unit converter
 
-*How to use:*
+###### How to use:
 
-1) Download dhis2 organisation unit json files and add them to the input folder (input_dir)
+1) **Download dhis2 organisation unit** json files and add them to the input folder (by default "input")
 You can add multiple files to convert in the same execution.
+If you want to configure a different input/output folder, please change them in config.json configuration file
 
-2) Run the script
+2) **Run the script**
   - Bat: execute run-dhis2godata.bat
   - Command line: go to the script folder and run "python dhis2godata.py".
 
-3) The files will be generated in the output folder (output_dir)
+3) **Get the files**. They will be generated in the output folder (by default "output")
 
 
-How to download dhis2 formatted org units:
+###### How to download dhis2 formatted org units:
 To download the dhis2 OU json files you can use the API:
 
 1) If you know the UID in DHIS2 of the country, you can e.g. filter by path entering the following URL in your browser and saving the result as a file in your computer
