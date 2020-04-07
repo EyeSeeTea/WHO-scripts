@@ -1,4 +1,3 @@
-import copy
 import os
 from os.path import isfile
 from os import listdir
@@ -26,7 +25,12 @@ def main():
     input = cfg["input_dir"]
     output = cfg["output_dir"]
 
-    files = [f for f in listdir(input) if isfile(join(input, f))]
+    is_json = lambda fname: os.path.splitext(fname)[-1] in ['.json']
+    is_not_json = lambda fname: not os.path.splitext(fname)[-1] in ['.json']
+    is_not_git = lambda fname: not fname.startswith(".git")
+    applied_filter = is_not_git if is_json else is_not_json
+
+    files = [f for f in filter(applied_filter, listdir(input)) if isfile(join(input, f))]
     for path_file in files:
         print("generating " + path_file)
         with open(os.path.join(input, path_file), encoding='utf8') as json_file:
