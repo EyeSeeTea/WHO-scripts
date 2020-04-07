@@ -43,9 +43,10 @@ def main():
 
             godata_orgunits = create_godata_org_unit(root_org_unit_uid, objects, default_level)
 
-            with open(join(output, path_file), 'w', encoding="utf-8") as outfile_json:
+            with open(join(output, path_file), 'w', encoding='utf-8') as outfile_json:
                 json.dump(godata_orgunits, outfile_json, indent=4, ensure_ascii=False)
                 print("Done " + path_file)
+
 
 def get_config(fname):
     "Return dict with the options read from configuration file"
