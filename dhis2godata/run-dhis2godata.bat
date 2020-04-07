@@ -1,1 +1,2 @@
-python3 dhis2godata.py
+python dhis2godata.py
+pause
