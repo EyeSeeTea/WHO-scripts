@@ -1,0 +1,100 @@
+Main file: DHIS2 users json file:
+ {
+  "users": [
+    {
+        "access": {
+            "delete": true,
+            "externalize": true,
+            "manage": true,
+            "read": true,
+            "update": true,
+            "write": true
+        },
+        "attributeValues": [],
+        "created": "2014-03-28T20:12:17.000",
+        "dataViewOrganisationUnits": [
+            {
+                "id": "seHJdofSPcM"
+            }
+        ],
+        "displayName": "AFRO GMP",
+        "email": "williamsryan@who.int",
+        "externalAccess": false,
+        "favorite": false,
+        "favorites": [],
+        "firstName": "AFRO",
+        "id": "oXgbhrNRNon",
+        "lastUpdated": "2014-07-03T14:12:43.000",
+        "name": "AFRO GMP",
+        "organisationUnits": [],
+        "phoneNumber": "",
+        "surname": "GMP",
+        "teiSearchOrganisationUnits": [],
+        "translations": [],
+        "userAccesses": [],
+        "userCredentials": {
+            "access": {
+                "delete": true,
+                "externalize": true,
+                "manage": true,
+                "read": true,
+                "update": true,
+                "write": true
+            },
+            "attributeValues": [],
+            "catDimensionConstraints": [],
+            "code": "gmpafro",
+            "cogsDimensionConstraints": [],
+            "created": "2014-03-28T20:12:17.000",
+            "disabled": false,
+            "displayName": "AFRO GMP",
+            "externalAccess": false,
+            "externalAuth": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "ZUekYDxz0zn",
+            "invitation": false,
+            "lastLogin": "2014-04-08T14:34:52.000",
+            "lastUpdated": "2016-04-05T17:33:42.000",
+            "name": "AFRO GMP",
+            "passwordLastUpdated": "2014-03-28T20:12:17.000",
+            "selfRegistered": false,
+            "translations": [],
+            "twoFA": false,
+            "userAccesses": [],
+            "userGroupAccesses": [],
+            "userInfo": {
+                "id": "oXgbhrNRNon"
+            },
+            "userRoles": [
+                {
+                    "id": "qu3l1sMFR3d"
+                }
+            ],
+            "username": "gmpafro"
+        },
+        "userGroupAccesses": [],
+        "userGroups": [
+            {
+                "id": "ZXEVDM9XRea"
+            },
+            {
+                "id": "k25lFNtgiJw"
+            }
+        ]}
+  ]
+ }
+
+
+pg_dump -d "postgresql://dhishq_usr:DVAHy%25}g9HxH9g,.jk?B@pgdb002.who.int:5432/dhishq" --table users -f /tmp/malaria_prod_users.sql
+docker exec -it container_name pg_dump -U dhis dhis2 --table users > /tmp/malaria_prod_users.sql
+
+sed 's/public.users/public.aux_malaria_users/g' /tmp/malaria_prod_users.sql > /tmp/ready_malaria_prod_users.sql
+
+psql -d postgresql://dhishq_usr:DVAHy%25}g9HxH9g,.jk?B@pgdb002.who.int:5432/dhishq -f tmp/ready_malaria_prod_users.sql
+d2-docker run-sql -i instance ready_malaria_prod_users.sql
+
+update users
+set password = aux_malaria_users.password, secret = aux_malaria_users.secret
+from aux_malaria_users
+where users.uid = aux_malaria_users.uid;
