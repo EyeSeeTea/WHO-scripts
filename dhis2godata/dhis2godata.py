@@ -13,7 +13,10 @@ godata_skell = {"children": "%s",
                              "identifiers": [{"code": "%s"}],
                              "name": "%s", "active": True,
                              "id": "%s", "populationDensity": 0,
-                             "geographicalLevelId": "%s"}}
+                             "identifiers": [],
+                             "geoLocation": None,
+                             "geographicalLevelId": "%s",
+                             "parentLocationId": "%s"}}
 relations = dict()
 
 
@@ -44,7 +47,7 @@ def main():
             godata_orgunits = create_godata_org_unit(root_org_unit_uid, objects, default_level)
 
             with open(join(output, path_file), 'w', encoding='utf-8') as outfile_json:
-                json.dump(godata_orgunits, outfile_json, indent=4, ensure_ascii=False)
+                json.dump([godata_orgunits], outfile_json, indent=4, ensure_ascii=False)
                 print("Done " + path_file)
 
 
@@ -84,6 +87,16 @@ def get_children(geodata_orgunit, active_org_unit, objects, default_level):
     return geodata_orgunit
 
 
+def get_parent(parent_uid, org_units, godata_level):
+    if godata_level == 0:
+        return None
+    for org_unit in org_units["organisationUnits"]:
+        if org_unit["id"] == parent_uid:
+            if "code" in org_unit.keys():
+                return parent_uid
+    return None
+
+
 def create_godata_org_unit(uid, objects, default_level):
     for org_unit in objects["organisationUnits"]:
         if org_unit["id"] in uid:
@@ -100,13 +113,22 @@ def create_godata_org_unit(uid, objects, default_level):
                 code = org_unit["code"]
             else:
                 code = uid
-            geodata_orgunit = {"children": [],
-                               "location": {"geoLocation": {"lng": latitude, "lat": longitude},
+            geodata_orgunit = {"location": {
+                                            "name": org_unit["name"],
+                                            "synonyms": [],
                                             "identifiers": [{"code": code}],
-                                            "name": org_unit["name"], "active": True,
-                                            "id": uid, "populationDensity": 0,
-                                            "geographicalLevelId": (level_code % godata_level)}}
+                                            "active": True,
+                                            "parentLocationId": get_parent(org_unit["parent"]["id"], objects, godata_level),
+                                            "geoLocation": None,
+                                            "geographicalLevelId": (level_code % godata_level),
+                                            "id": uid
+            },
+                                "children": []}
 
+            if latitude != "" or longitude != "":
+                geodata_orgunit["geoLocation"]: {"lng": latitude, "lat": longitude}
+            if godata_level == 0 :
+                geodata_orgunit["populationDensity"] = 0
             get_children(geodata_orgunit, org_unit, objects, default_level)
             return geodata_orgunit
 
