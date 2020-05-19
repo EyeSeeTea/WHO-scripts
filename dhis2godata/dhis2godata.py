@@ -24,7 +24,7 @@ def main():
     root_org_unit_uid = ""
 
     cfg = get_config("config.json")
-    default_level = cfg["default_level"]
+    root_level = cfg["root_level"]
     input = cfg["input_dir"]
     output = cfg["output_dir"]
 
@@ -40,11 +40,11 @@ def main():
             objects = json.load(json_file)
 
             for orgunit in objects["organisationUnits"]:
-                if str(orgunit["level"]) == default_level:
+                if str(orgunit["level"]) == root_level:
                     root_org_unit_uid = orgunit["id"]
                     break
 
-            godata_orgunits = create_godata_org_unit(root_org_unit_uid, objects, default_level)
+            godata_orgunits = create_godata_org_unit(root_org_unit_uid, objects, root_level)
 
             with open(join(output, path_file), 'w', encoding='utf-8') as outfile_json:
                 json.dump([godata_orgunits], outfile_json, indent=4, ensure_ascii=False)
@@ -70,7 +70,7 @@ def get_longitude(coordinates):
     return re.findall(r"[-]?\d+\.\d+", coordinates)[1]
 
 
-def get_children(geodata_orgunit, active_org_unit, objects, default_level):
+def get_children(geodata_orgunit, active_org_unit, objects, root_level):
     children = geodata_orgunit["children"]
     children_uids = list()
     for uid in active_org_unit["children"]:
@@ -81,7 +81,7 @@ def get_children(geodata_orgunit, active_org_unit, objects, default_level):
     else:
         return geodata_orgunit
     for uid in children_uids:
-        org_unit = create_godata_org_unit(uid, objects, default_level)
+        org_unit = create_godata_org_unit(uid, objects, root_level)
         children.append(org_unit)
     geodata_orgunit["children"] = children
     return geodata_orgunit
@@ -97,11 +97,11 @@ def get_parent(parent_uid, org_units, godata_level):
     return None
 
 
-def create_godata_org_unit(uid, objects, default_level):
+def create_godata_org_unit(uid, objects, root_level):
     for org_unit in objects["organisationUnits"]:
         if org_unit["id"] in uid:
 
-            godata_level = org_unit["level"] - int(default_level)
+            godata_level = org_unit["level"] - int(root_level)
             latitude = ""
             longitude = ""
             if "coordinates" in org_unit.keys() and "featureType" in org_unit.keys() and org_unit[
@@ -113,12 +113,18 @@ def create_godata_org_unit(uid, objects, default_level):
                 code = org_unit["code"]
             else:
                 code = uid
+
+            if int(root_level) == org_unit["level"]:
+                parent = None
+            else:
+                parent = get_parent(org_unit["parent"]["id"], objects, godata_level)
+
             geodata_orgunit = {"location": {
                                             "name": org_unit["name"],
                                             "synonyms": [],
                                             "identifiers": [{"code": code}],
                                             "active": True,
-                                            "parentLocationId": get_parent(org_unit["parent"]["id"], objects, godata_level),
+                                            "parentLocationId": parent,
                                             "geoLocation": None,
                                             "geographicalLevelId": (level_code % godata_level),
                                             "id": uid
@@ -129,7 +135,7 @@ def create_godata_org_unit(uid, objects, default_level):
                 geodata_orgunit["geoLocation"]: {"lng": latitude, "lat": longitude}
             if godata_level == 0 :
                 geodata_orgunit["populationDensity"] = 0
-            get_children(geodata_orgunit, org_unit, objects, default_level)
+            get_children(geodata_orgunit, org_unit, objects, root_level)
             return geodata_orgunit
 
 
