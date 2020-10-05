@@ -23,12 +23,16 @@ If you want to configure a different input/output folder, please change them in 
 To download the dhis2 OU json files you can use the API:
 
 1) If you know the UID in DHIS2 of the country, you can e.g. filter by path entering the following URL in your browser and saving the result as a file in your computer
+```
 <INSTANCE-URL>/api/organisationUnits/<UID>.json?fields=name,id,level,coordinates,featureType,code,parent,children[id]&paging=false&includeDescendants=true
 (replace <INSTANCE-URL> by your instance URL and <UID> by the OU UID)
+```
 
 2) If you don't know the UID of the OU, you can find it by using the following URL in your browser:
+```
 <INSTANCE-URL>/api/organisationUnits.json/filter=name:ilike:<NAME>
 (replace <INSTANCE-URL> by your instance URL and <NAME> by the name of the OU you would like to find out its UID)
+```
 
 The answer would be similar to the following:
 ```
