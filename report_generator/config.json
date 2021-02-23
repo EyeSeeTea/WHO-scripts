@@ -1,0 +1,38 @@
+{
+  "servers": [
+    {
+      "report_name": "",
+      "method": "api",
+      "origin": {
+        "user": "",
+        "password": "",
+        "server": ""
+      },
+      "destine": {
+        "id": "",
+        "user": "",
+        "password": "!",
+        "server": "",
+        "dataelement_uid": "",
+        "categoryoptioncombo_uid": ""
+      }
+    },
+    {
+      "report_name": "dev",
+      "method": "api",
+      "origin": {
+        "user": "",
+        "password": "",
+        "server": ""
+      },
+      "destine": {
+        "id": "",
+        "user": "",
+        "password": "",
+        "server": "",
+        "dataelement_uid": "",
+        "categoryoptioncombo_uid": ""
+      }
+    }
+  ]
+}
